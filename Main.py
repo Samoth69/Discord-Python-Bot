@@ -2,12 +2,14 @@
 from random import randint
 
 import discord
-import json
 
 client = discord.Client()
 
-# name of the file with ascii drawing in it
-PATH_JSON_ASCII = "ascii.json"
+# file with the exhaustive list of files with ascii art in them
+PATH_FILE_LIST = "files.txt"
+
+# folder name with all ascii files in it
+PATH_FOLDER_ASCII = "ASCII"
 
 # discord bot token id
 PATH_TXT_TOKEN = "token.txt"
@@ -37,7 +39,8 @@ async def on_message(message):
 
         if message.content.startswith(';a'):
             await print_ascii_art(message, 1)
-    except Exception:
+    except Exception as err:
+        print(err)
         pass
 
 
@@ -49,23 +52,32 @@ async def print_help(message):
     emb.colour = discord.Colour.blue()
     # emb.description = "description"
     emb.add_field(name=";h or ;help", value="Show this help (list of commands)", inline=False)
-    emb.add_field(name=";a or ;ascii [s(mall)|m(edium)|l(arge)]", value="Print one ascii art thing, optionally, you can set the size of the print. If not mentioned, a random size will be chosen",
+    emb.add_field(name=";a or ;ascii [name]", value="Print one ascii art thing, optionally, you set a name to search. If not found or not specified, a random file will be chosen",
                   inline=False)
     await message.channel.send(embed=emb)
 
 
 # Print an "ASCII art" thing on discord chat
 # Input: message - Type: discord.Message (it's use to know where to put the message)
-#        size - integer - size of the drawing (in term of height) (0: not specified (random), 1: small, 2: medium, 3: large)
-async def print_ascii_art(message, size):
+#        name - Type:string
+async def print_ascii_art(message, name=""):
     with open(PATH_JSON_ASCII) as json_file:
         data = json.load(json_file)
+        if size < 1 or size > 3:
+            size = randint(1, 3)
+
         if size == 1:
             drawing_size = "small"
-            number_of_elements = data["ascii"][drawing_size][0]["size"]
+        elif size == 2:
+            drawing_size = "medium"
+        elif size == 3:
+            drawing_size = "large"
+
+        number_of_elements = data["ascii"][drawing_size][0]["size"]
         rnd = randint(1, number_of_elements)
 
         await message.channel.send("**" + data["ascii"][drawing_size][rnd]["name"] + "**\n```" + data["ascii"][drawing_size][rnd]["content"] + "```")
+
 
 # Load token file and then load the bot
 with open(PATH_TXT_TOKEN) as token_file:
