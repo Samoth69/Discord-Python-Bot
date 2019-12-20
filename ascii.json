@@ -1,0 +1,11 @@
+{
+  "ascii": {
+    "small": [
+      {"size": 2},
+      {"name": "Rose", "content": "@-->--->---"},
+      {"name": "Arrow", "content": ">>------>"}
+      ],
+    "medium": "d",
+    "large": "f"
+  }
+}
