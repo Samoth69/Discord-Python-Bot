@@ -24,7 +24,7 @@ async def on_ready():
     await client.change_presence(activity=ac, status=discord.Status.online, afk=False)
 
 
-# Trigger when their is a message to read
+# Trigger when there is a message to read
 @client.event
 async def on_message(message):
     try:
